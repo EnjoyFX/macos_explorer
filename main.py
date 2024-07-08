@@ -52,29 +52,28 @@ def txt_selector(visible_count, hidden_count, subj='file(s)'):
 
 def select_files():
     files = filedialog.askopenfilenames()
-    visible_count, hidden_count = 0, 0
+    counts = {'visible': 0, 'hidden': 0}
     for file in files:
         result, status = toggle_visibility(file)
-        if status == 'visible':
-            visible_count += 1
-        elif status == 'hidden':
-            hidden_count += 1
+        counts[status] += 1
+    visible_count, hidden_count = counts['visible'], counts['hidden']
     if (visible_count + hidden_count) > 0:
         messagebox.showinfo("Success",
-                                txt_selector(visible_count, hidden_count))
+                            txt_selector(visible_count, hidden_count))
 
 
 def select_folder():
     folder = filedialog.askdirectory()
-    visible_count, hidden_count = 0, 0
+    counts = {'visible': 0, 'hidden': 0}
     if folder:
         for root, dirs, files in os.walk(folder):
             for name in files + dirs:
                 result, status = toggle_visibility(os.path.join(root, name))
-                if status == 'visible':
-                    visible_count += 1
-                elif status == 'hidden':
-                    hidden_count += 1
+                counts[status] += 1
+        # Uncomment two next lines if root should be hidden as well
+        # result, status = toggle_visibility(root)
+        # counts[status] += 1
+    visible_count, hidden_count = counts['visible'], counts['hidden']
     if (visible_count + hidden_count) > 0:
         messagebox.showinfo("Success",
                             txt_selector(visible_count,
